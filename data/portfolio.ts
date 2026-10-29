@@ -13,6 +13,10 @@ export const site = {
   linkedin: "https://www.linkedin.com/in/shifana-siddieeq",
   github: "https://github.com/Shifanasiddieeq",
   photo: "/shifana.jpg",
+  // Tighter 4:5 crop of the photo above, used in the hero
+  portrait: "/shifana-portrait.jpg",
+  // Shown as tags on the hero card under the portrait
+  coreStack: ["TypeScript", "Next.js", "Node.js", "PostgreSQL", "AWS"],
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://shifana.dev",
   summary:
     "4+ years building production apps with the MERN/TypeScript stack. Primary developer on an enterprise ERP for a Dubai construction company. Former Assistant Professor of Computer Science.",
@@ -26,6 +30,8 @@ export const site = {
 
 export const about = {
   heading: "Software engineer building systems businesses run on.",
+  // Different photo from the hero so the page doesn't repeat itself
+  photo: "/shifana-work.jpg",
   paragraphs: [
     "I'm a full-stack software engineer with 4+ years of experience building production systems — ERPs, approval workflows and client portals — with TypeScript, Next.js, Node.js and PostgreSQL.",
     "At KEA Building Contracting in Dubai I'm the primary developer of a modular ERP spanning HR, payroll, project management and a client portal, including an AI assistant that answers questions over live company data.",

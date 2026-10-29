@@ -14,8 +14,8 @@ export function About() {
           <Reveal delay={0.1}>
             <div className="relative mt-10 aspect-[3/4] w-full max-w-sm overflow-hidden rounded-3xl border border-line/10">
               <Image
-                src={site.photo}
-                alt={`Portrait of ${site.name}`}
+                src={about.photo}
+                alt={`${site.name} at work`}
                 fill
                 sizes="(min-width: 768px) 384px, 100vw"
                 className="object-cover"

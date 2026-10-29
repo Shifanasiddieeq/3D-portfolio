@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense, useMemo, useRef } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, MeshDistortMaterial, Environment, Points, PointMaterial } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { CanvasLoader } from "./CanvasLoader";
 import type { Tier } from "@/hooks/useDeviceTier";
@@ -13,51 +13,7 @@ function accentColor() {
   return new THREE.Color(r / 255, g / 255, b / 255);
 }
 
-/**
- * Glossy liquid blob that drifts toward the mouse and spins slowly.
- * Sits to the right of the hero text on wide screens and tucks into the top-right corner on phones.
- */
-function Blob({ tier }: { tier: Tier }) {
-  const mesh = useRef<THREE.Mesh>(null);
-  const target = useRef(new THREE.Vector2());
-  const color = useMemo(accentColor, []);
-  const { viewport } = useThree();
-
-  const wide = viewport.aspect > 1.1;
-  const baseX = viewport.width * (wide ? 0.24 : 0.32);
-  const baseY = wide ? 0 : viewport.height * 0.24;
-  const scale = wide ? 1.15 : 0.7;
-
-  useFrame((state, dt) => {
-    const m = mesh.current;
-    if (!m) return;
-    target.current.lerp(state.pointer, 0.05);
-    m.rotation.y += dt * 0.15;
-    m.rotation.x = target.current.y * 0.35;
-    m.rotation.z = target.current.x * 0.35;
-    m.position.x = THREE.MathUtils.lerp(m.position.x, baseX + target.current.x * 0.3, 0.05);
-    m.position.y = THREE.MathUtils.lerp(m.position.y, baseY + target.current.y * 0.2, 0.05);
-  });
-
-  return (
-    <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.8}>
-      <mesh ref={mesh} scale={scale} position={[baseX, baseY, 0]}>
-        <icosahedronGeometry args={[1, tier === "high" ? 64 : 24]} />
-        <MeshDistortMaterial
-          color={color}
-          distort={0.35}
-          speed={1.6}
-          roughness={0.08}
-          // Low tier has no environment map, and metal with nothing to reflect renders muddy
-          metalness={tier === "high" ? 0.25 : 0}
-          envMapIntensity={0.9}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-/** Slowly rotating particle field behind the blob. */
+/** Slowly rotating particle field behind the hero. */
 function Particles({ count }: { count: number }) {
   const ref = useRef<THREE.Points>(null);
   const positions = useMemo(() => {
@@ -105,14 +61,7 @@ export function HeroScene({ tier }: { tier: Tier }) {
       className="!absolute inset-0"
     >
       <Suspense fallback={<CanvasLoader />}>
-        {/* Low tier skips the studio environment, so it needs more fill light to match */}
-        <ambientLight intensity={tier === "high" ? 0.4 : 1.2} />
-        <directionalLight position={[5, 5, 5]} intensity={1.5} />
-        <pointLight position={[-5, -3, -5]} intensity={2} color={accentColor()} />
-        <Blob tier={tier} />
         <Particles count={tier === "high" ? 1400 : 500} />
-        {/* Soft studio reflections; "city" made the blob look like dark glass on the light theme */}
-        {tier === "high" && <Environment preset="studio" />}
         <Rig />
       </Suspense>
     </Canvas>
